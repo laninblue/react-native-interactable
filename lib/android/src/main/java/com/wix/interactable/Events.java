@@ -34,6 +34,28 @@ public class Events {
         }
     }
 
+    public static class OnSnapStartEvent extends Event<OnSnapStartEvent> {
+
+        WritableMap eventData;
+
+        public OnSnapStartEvent(int viewTag, int indexOfSnapPoint, String snapPointId) {
+            super(viewTag);
+            eventData = Arguments.createMap();
+            eventData.putInt("index",indexOfSnapPoint);
+            eventData.putString("id", snapPointId);
+        }
+
+        @Override
+        public String getEventName() {
+            return "onSnapStart";
+        }
+
+        @Override
+        public void dispatch(RCTEventEmitter rctEventEmitter) {
+            rctEventEmitter.receiveEvent(getViewTag(), getEventName(), eventData);
+        }
+    }
+
     public static class OnAnimatedEvent extends Event<OnAnimatedEvent> {
 
         WritableMap eventData;
@@ -80,18 +102,39 @@ public class Events {
 
         WritableMap eventData;
 
-        public onDrag(int viewTag, String state, float x, float y) {
+        public onDrag(int viewTag, String state, float x, float y, String targetSnapPointId) {
             super(viewTag);
             eventData = Arguments.createMap();
             eventData.putString("state", state);
             eventData.putDouble("x", PixelUtil.toDIPFromPixel(x));
             eventData.putDouble("y", PixelUtil.toDIPFromPixel(y));
+            eventData.putString("targetSnapPointId", targetSnapPointId);
         }
 
         @Override
         public String getEventName() {
             return "onDrag";
         }
+
+        @Override
+        public void dispatch(RCTEventEmitter rctEventEmitter) {
+            rctEventEmitter.receiveEvent(getViewTag(), getEventName(), eventData);
+        }
+    }
+
+    public static class onStop extends Event<onStop> {
+
+        WritableMap eventData;
+
+        public onStop(int viewTag, float x, float y) {
+            super(viewTag);
+            eventData = Arguments.createMap();
+            eventData.putDouble("x", PixelUtil.toDIPFromPixel(x));
+            eventData.putDouble("y", PixelUtil.toDIPFromPixel(y));
+        }
+
+        @Override
+        public String getEventName() { return "onStop"; }
 
         @Override
         public void dispatch(RCTEventEmitter rctEventEmitter) {
